@@ -82,45 +82,51 @@ function bvalidation(request, response, next) {
     dueDate = "",
   } = request.body;
 
+  let conditions = true;
+
   if (status !== "") {
     let given = ["TO DO", "IN PROGRESS", "DONE"];
     if (!given.includes(status)) {
+      conditions = false;
       response.status(400);
       response.send("Invalid Todo Status");
     }
   }
-
   if (priority !== "") {
     let given = ["HIGH", "MEDIUM", "LOW"];
     if (!given.includes(priority)) {
+      conditions = false;
       response.status(400);
       response.send("Invalid Todo Priority");
     }
   }
-
   if (category !== "") {
     let given = ["WORK", "HOME", "LEARNING"];
     if (!given.includes(category)) {
+      conditions = false;
       response.status(400);
       response.send("Invalid Todo Category");
     }
   }
-
   if (dueDate !== "") {
     try {
       let date = parse(dueDate, "yyyy-MM-dd", new Date(2021 - 12 - 12));
 
       if (!isValid(date)) {
+        conditions = false;
         response.status(400);
         response.send("Invalid Due Date");
       }
     } catch {
+      conditions = false;
       response.status(400);
       response.send("Invalid Due Date");
     }
   }
 
-  next();
+  if (conditions) {
+    next();
+  }
 }
 
 //convertor
@@ -149,9 +155,11 @@ app.get("/todos/", validation, async (request, response) => {
     category LIKE '%${category}%' AND
     priority LIKE '%${priority}%'; `;
 
-  let result = await db.all(query);
+  try {
+    let result = await db.all(query);
 
-  response.send(result.map((obj) => convertor(obj)));
+    response.send(result.map((obj) => convertor(obj)));
+  } catch {}
 });
 
 //API 2
@@ -203,9 +211,11 @@ app.post("/todos/", bvalidation, async (request, response) => {
   (id,todo,priority,status,category,due_date)
   VALUES (${id},'${todo}','${priority}','${status}','${category}', '${dueDate}'); `;
 
-  await db.run(query);
+  try {
+    await db.run(query);
 
-  response.send("Todo Successfully Added");
+    response.send("Todo Successfully Added");
+  } catch {}
 });
 
 //API 5

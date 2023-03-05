@@ -1,7 +1,11 @@
+###
+http://localhost:3000/todos/
+
+###
 http://localhost:3000/agenda/?date=2020-9-22
 
 ###
-http://localhost:3000/todos/?priority=HIG
+http://localhost:3000/todos/?priority=HIGH
 
 
 ###
@@ -12,9 +16,9 @@ Content-Type : application/json
   "id": 6,
   "todo": "Finalize event theme",
   "priority": "LOW",
-  "status": "TO DO",
+  "status": "TODO",
   "category": "HOME",
-  "dueDate": "2021-02-22"
+  "dueDate": "2021-2-22"
 }
 
 ###
